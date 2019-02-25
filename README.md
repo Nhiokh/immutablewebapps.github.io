@@ -1,38 +1,38 @@
-# ![Immutable Web Apps](icons/favicon-32x32.png) Immutable Web Apps
+# ![Immutable Web Apps](icons/favicon-32x32.png) Applications Web Immutables
 
 ## ![Introduction](icons/favicon-16x16.png) Introduction
 
-_Immutable Web Applications_ is a framework-agnostic methodology for building and deploying static [single-page applications](https://en.wikipedia.org/wiki/Single-page_application) that:
+_Applications Web Immutables_ est une méthodologie 'framework-agnostic' (sans framework associé) permettant de construire et de déployer des [single-page applications](https://en.wikipedia.org/wiki/Single-page_application) (applications mono-page) en:
 
-- Minimizes risk and complexity of live releases.
-- Simplifies and maximizes caching.
-- Minimizes the need for servers and administration of runtime environments.
-- Enables continuous delivery through simple, flexible, atomic deployments.
+- Minimisant les risques et complixitées relatives aux déploiements.
+- Simplifiant and maximisant l'efficacité de la mise en cache.
+- Minimisant les besoins en termes de serveurs et d'administration d'environnements 'runtime'.
+- Permettant une mise en production continue via des déploiements simples, flexibles et atomiques.
 
-## ![Principles](icons/favicon-16x16.png) Principles
+## ![Principes](icons/favicon-16x16.png) Principes
 
-The methodology is based on the principles of ___strictly separating___:
+La méthodologie s'appuie sur un principe de __stricte séparation__ :
 
-- Configuration from code.
-- Release tasks from build tasks.
-- Dynamic content from static content.
+- De la configuration vis-à-vis du code,
+- Des tâches de déploiement vis-à-vis des tâches de 'build',
+- Du contenu dynamique vis-à-vis du contenu statique.
 
 ## ![Concepts](icons/favicon-16x16.png) Concepts
 
-The following concepts define the core requirements for an _Immutable Web Application_. They are framework and infrastructure agnostic.
+Les concepts suivants définissent les minima requis pour une __Application Web Immutable__. Ils ne dépendent d'aucun framework ni d'aucune infrastructure.
 
-### Static assets are independent of the web application environment(s)
+### Les ressources statiques sont indépendantes de l'environnement d'une application web
 
-Static assets are the files (javascript, css, images) that are generated from a build of a web application codebase. They become _immutable_ when they do not contain anything environment-specific and they are published to a unique, independent location.
+Les ressources statiques sont les fichiers (javascript, css, images) générés à la construction une applicaiton web depuis son code source. Elles deviennent _immutables_ quand elles ne dépendent d'aucune spécificité d'environnement et qu'elles sont publiées dans un lieu unique et indépendant.
 
-#### Static assets must not contain anything that is environment-specific
+#### Les ressources statiques ne doivent pas rien contenir qui soit spécifique à un environnement
 
-All of the leading application frameworks ([Angular CLI](https://github.com/angular/angular-cli/wiki/stories-application-environments), [Create React App](https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code), [Ember CLI](https://ember-cli.com/user-guide/#Environments), [Vue CLI 3](https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code)) recommend defining environment _values_ at _compile time_. This practice requires that the static assets are generated for each environment and regenerated for any change to an environment.
+Tous les frameworks d'applications majeurs ([Angular CLI](https://github.com/angular/angular-cli/wiki/stories-application-environments), [Create React App](https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code), [Ember CLI](https://ember-cli.com/user-guide/#Environments), [Vue CLI 3](https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code)) recommendent de définir les valeurs d'environnements à la _compilation_. Cette pratique demande que les ressources statiques soient générées pour chaque environnement et générées à nouveau pour chaque changement apporté à un environnement.
 
-_Immutable Web Applications_ reference environment _variables_ that are defined on the global scope and reference one of two ways:
+_Applications Web Immutables_ référence les _variables_ d'environnements définies globalement de deux façons :
 
-- Directly from the `window` object
-- Through an injected service that wraps the environment variables
+- Directement depuis l'objet `window`
+- Depuis un service injecté qui 'wrap' (entoure) les variables d'environnements
 
 ```diff
   export class UserService {
@@ -41,9 +41,9 @@ _Immutable Web Applications_ reference environment _variables_ that are defined 
     constructor(
         private http: HttpClient
         ) {
--         // remove any configuration that is hardcoded or included during compilation
+-         // Supprimez toute configuration écrite en dur ou inclue durant la compilation
 -         this.webServiceUrl = 'https://api.myapp.com'
-+         // use globally scoped environment variables that are unique to the deployment
++         // Utilisez des variables définies de façon globale uniques au déploiement
 +         this.webServiceUrl = window.env.API
         }
 
@@ -53,43 +53,43 @@ _Immutable Web Applications_ reference environment _variables_ that are defined 
   }
 ```
 
-The values for the environment _variables_ are set on an `index.html` that is unique to each environment.
+Les valeurs pour les _variables_ d'environnements sont définies dans un `index.html` unique pour chaque environnement.
 
-#### Static assets must be hosted at locations that are unique and _independent of the web application environment(s)_.
+#### Les ressources statiques doivent être hébergées depuis des emplacements uniques et _indépendants de(s) environnement(s) de l'application web_
 
-Static assets that do not contain anything environment-specific can be built once, published to a unique location, and then used in multiple environments of the web application.
+Les ressources statiques qui ne contiennent aucune spécificité dû à l'environnement peuvent être construite seulement une fois, publiées dans un emplacement unique, et utilisées par de multiples environnements pour une même application web.
 
-These static assets share the same qualities as hosted javascript libraries on content delivery networks (CDN) ([Google Hosted Libraries](https://developers.google.com/speed/libraries/), [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/), [UNPKG](https://unpkg.com/)):
+Les ressources statiques partagent les caractéristiques des librairies javascript publiées via CDN (content delivery networks) ([Google Hosted Libraries](https://developers.google.com/speed/libraries/), [cdnjs](https://cdnjs.com/), [jsDelivr](https://www.jsdelivr.com/), [UNPKG](https://unpkg.com/)):
 
 <code>https:/<span></span>/<span style="font-weight: bold">ajax.googleapis.c<span></span>om</span>/ajax/libs/jquery/<span style="font-weight: bold">3.3.1</span>/jquery.min.js</code>
 
-The location of the jquery library above, referenced by innumerable web applications, is both independent of the applications and uniquely versioned.
+L'emplacement de la librairie jQuery ci-dessus, référencée par d'innombrables applications web, est à la fois indépendante des-dites applications et versionnée de façon unique.
 
 <code>https:/<span></span>/<span style="font-weight: bold">assets.myapp.c<span></span>om</span>/apps/<span style="font-weight: bold">1.0.2</span>/main.js</code>
 
-Similarly, the location of the web application javascript files are unique and hosted at a location that is dedicated to static assets. The static asset web server is a repository for versions of the web application.
+De même, l'emplacement des fichiers javascript de l'application web est unique et publié dans un espace dédié aux ressources statiques. Le serveur de ressources statiques est un répertoire de versions de l'application web.
 
-#### Configure the static assets for long-term caching
+#### Configurez les ressources statiques pour de la mise en cache à long terme
 
-Static assets that do not contain anything environment-specific and  are hosted at a unique and permanent location may be configured to be [cached by the browser (almost) indefinitely](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Caching_static_assets):
+Les ressources statiques qui ne contiennent aucune spéficité dûe à l'environnement et qui sont publiées depuis un emplacement unique et permanent peuvent être [mis en cache de quasi-indéfiniment](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Caching_static_assets):
 
  `cache-control: public, max-age=31536000, immutable`
 
-### `index.html` is deployable configuration
+### `index.html` est une configuration déployable
 
- The HTML document of a single-page application (often `index.html`) is ___not___ static. It varies from environment to environment, and deploy to deploy. The HTML document is a composition of the environment-specific configuration and _immutable_ static assets that define the web application.
+Le document HTML d'une application mono-page (souvent `index.html`) n'est ___pas___ statique. Il varie d'environnement en environnement et de déploiement en déploiement. Il est un assemblage de la configuration spécifique à l'environnement et des ressources statiques _immutables_ qui définissent l'application web.
 
-#### `index.html` contains fully-qualified references to the static assets
+#### `index.html` contient des références pleinement qualifiées aux ressources statiques
 
 ```diff
-- <!-- not unique, not independent -->
+- <!-- ni unique, ni indépendant -->
 - <script src="main.js" type="text/javascript"></script>
 
-+ <!-- permanent, reuseable -->
++ <!-- permanent, réutilisable -->
 + <script src="https://assets.myapp.com/apps/1.0.2/main.js" type="text/javascript"></script>
 ```
 
-#### `index.html` defines the values of the globally scoped environment variables
+#### `index.html` défini les valeurs des variables d'environnement globales
 
 ```html
 <script>
@@ -100,15 +100,15 @@ env = {
 </script>
 ```
 
-#### `index.html` must never be cached
+#### `index.html` ne doit jamais être mis en cache
 
-To allow for web application environments to be changed instantly, `index.html` must [never be cached by the browser or a public cache that cannot be purged on-demand:](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Preventing_caching)
+Afin de permettre à l'application web d'être changée de manière instantannée, `index.html` ne doit [jamais être mis en cache par le navigateur ou un cache public ne pouvant pas être purgé à la demande:](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Preventing_caching)
 
 `cache-control: no-store`
 
-##### _Example_
+##### _Exemple_
 
-The `index.html` of most single-page web applications is typically a small document. By including versioned references to the web application static assets and setting the environment variables it is effectively a deployment manifest:
+Le fichier `index.html` d'une majorité d'application web mono-page est un document de taille réduite. En y incluant les références versionnées des ressources statiques de l'application web, et en y définissant les variables d'environnement, il devient alors un manifeste de déploiement:
 
 ```html
 <!doctype html>
@@ -122,7 +122,7 @@ The `index.html` of most single-page web applications is typically a small docum
 </head>
     <body>
 
-        <!-- environment variables -->
+        <!-- variables d'environnement -->
         <script>
         env = {
             API: 'https://api.myapp.com',
@@ -130,10 +130,10 @@ The `index.html` of most single-page web applications is typically a small docum
         }
         </script>
 
-        <!-- application binding -->
+        <!-- ancre pour l'application -->
         <app-root></app-root>
 
-        <!-- fully-qualified static assets -->
+        <!-- ressources statiques pleinement qualifiées -->
         <script src="https://assets.myapp.com/apps/1.0.2/main.js" type="text/javascript"></script>
 
     </body>
@@ -142,127 +142,127 @@ The `index.html` of most single-page web applications is typically a small docum
 
 ## ![Workflow](icons/favicon-16x16.png) Workflow
 
-The _Immutable Web App_ separates release tasks from build tasks into two distinct workflows.
+_Applications Web Immutables_ sépare ses tâches de déploiement et de construction dans deux workflows distincts.
 
-### Building
+### Construction
 
-The codebase of an _Immutable Web App_ has the responsibility of building static assets and publishing them to a static web server. Each state of the codebase can be represented by a set of static assets at a unique location. Not every state of the codebase needs to be published, but no single state of the codebase should ever need to be published more than once.
+Le code d'une _Application Web Immutable_ à la responsabilité de construire des ressources statiques et de les publier depuis un serveur web statique. Chaque état de la 'codebase' n'a pas obligation d'être publié, mais chacun de ces états ne devrait jamais être publié plus d'une fois.
 
-Generally the codebase is a source controlled code repository integrated with a continuous integration system that is capable of building, versioning, and publishing static assets to a static web server.
+Généralement, son code est soumis à un contrôle de version via répertoire, avec un système d'intégration continue capable de construire, versionner, et publié des ressources statiques vers un server web statique.
 
-_An example of this might be:_
+_Exemple pratique :_
 
-An __Angular__ project hosted in a __GitHub__ repo. The repo is integrated with __TravisCI__ to build and version assets when commits are pushed to the master branch. Versioned assets are published to a unique location in an __AWS S3 bucket__.
+Un projet __Angular__ est hebergé dans un repo __GitHub__. Le repo est intégré avec __TravisCI__ afin de construire et de versionner les ressources poussées sur la branche master. Les ressources versionnées sont publiées dans un emplacement unique dans un bucket __AWS S3__.
 
-### Releasing
+### Déploiement
 
-The `index.html` files are managed independently of the codebase and they serve as a manifest for each environment. They should be considered configuration files and managed accordingly. Additionally, There needs to be a mechanism for modifying or replacing the `index.html` in each web application environment. The act of changing an `index.html` is effectively a deployment.
+Les `index.html` sont gérés indépendamment de la 'codebase' et servent de manifeste pour chaque environnement. Ils doivent être considérés comme des fichiers de configuration et gérés comme tel. De plus, il est nécessaire de créer un mechanisme pour modifier et remplacer les `index.html` dans chaque environnement. Changer un `index.html` est en soit un déploiement.
 
-_An example of this might be:_
+_Exemple pratique :_
 
-A set of `index.html` files, one for each environment, hosted in a __Github__ repo. The repo is integrated with __TravisCI__ to publish an `index.html` file when it is modified to an __AWS S3 bucket__. There is an `index.html` and S3 bucket dedicated to each web application environment.
+Un ensemble de fichiers `index.html`, un pour chaque environnement, hébergé dans un repo __Github__. Le repo est intégré avec __TravisCI__ afin de publier chaque `index.html` modifié vers __AWS S3 bucket__. Chaque environnement possède son propre `index.html` et son propre bucket S3.
 
 ### Infrastructure
 
 ![Infrastructure](assets/infrastructure.png)
 
-The infrastructure to support _Immutable Web Apps_ is composed of three parts:
+L'infrastructure pour supporter une __App Web Immutable__ est composée de trois parties :
 
-- __Web Application Server__: A static web server to host a web application environment by serving `index.html`.
-- __Static Asset Server__: A static web server to host the immutable static assets.
-- __API__: One or more publicly exposed endpoints to interact with the web application backend.
+- __Serveur d'Application Web__: Un serveur statique pour hébergé l'environnement de l'application web en servant l'`index.html`.
+- __Serveur de Ressources Statiques__: Un serveur web statique hébergeant les ressources statiques immutables.
+- __API__: Un ou plusieurs endpoint exposés afin d'intéragir avec le backend de l'application web.
 
-The two static web servers have different behaviors:
+Les deux serveurs statiques ont des comportements différents :
 
-| | Web Application Server | Static Asset Server |
+| | Serveur d'Application Web | Serveur de Ressources Statiques |
 | --- | --- | --- |
-| Content | `index.html` | Static assets (`*.js`,`*.css`, images, etc)|
-| Routing | always `index.html` | the physical file at the Url |
-| Cache-Control | `no store` | `cache-control: public, max-age=31536000, immutable` |
-| Instances | One per web application environment | One per web application
+| Contenu | `index.html` | Ressources Statiques (`*.js`,`*.css`, images, etc)|
+| Routage | toujours `index.html` | le fichier disponible à l'Url demandée |
+| Contrôle du cache | `no store` | `cache-control: public, max-age=31536000, immutable` |
+| Instances | Une par environnement de l'application web | Une par application web
 
-## ![Benefits](icons/favicon-16x16.png) Benefits
+## ![Benefices](icons/favicon-16x16.png) Bénéfices
 
-### Promoted deployments
+### Déploiement améliorés
 
-Building static assets is a complicated process that often involves:
+Construire des ressources statiques est un processus compliqué qui implique souvent de :
 
-- Resolving dependencies
-- Downloading libraries
-- Transpiling
-- Minifying
-- Bundling
-- Uglifying, Code Splitting, Tree Shaking, Autoprefixing... the list goes on...
+- résoudre des dépendances,
+- downloader des librairies,
+- transpiler
+- minifier,
+- bundler,
+- uglifier, diviser le code, de faire du tree-shaking, autoprefixer... la liste est longue...
 
-These processes are time consuming, rely heavily upon external dependencies, and often behave in a seemingly non-deterministic way. They are not processes that should be concluded by immediately publishing the generated assets to a production environment without validation. Even the act of publishing the multiple large static assets is a process that may be interrupted and leave the web application environment in a corrupt state.
+Ces processus prennent du temps, s'appuie sur les dépendences externes, et se comportent souvent de manière non-déterministe. Ce ne sont pas des processus qui devraient être conclus par la publication des ressources générées en production sans validation. Même l'action de publier de plusieurs ressources statiques lourdes est un processus qui peut être interrompu en laissant l'environnement de l'application web dans un état corrompu.
 
-_Immutable Web Applications_ are generated once and published once to a permanent location. This process happens in advance of a live release. They can be validated in staging environments and promoted to the production environment without being regenerated at significantly lower risk.
+Les __Applications Web Immutables__ sont générées une seule fois et publiées une seule fois à un emplacement permanent. Ce processus occure en avance du déploiement 'live'. Elles peuvent être validées dans un environnement de test, puis promuent vers l'environnement de production sans avoir besoin d'être regénérées, limitant significativement les risques.
 
-### Atomic live releases
+### Déploiement live atomique
 
-A live releases of an _Immutable Web App_ is the act of publishing a single `index.html` file. The deployment is instantaneous and all assets are available immediately without any risk of cache being corrupted at the time of the release.
+Le déploiement live d'un _Application Web Immutable_ se réduit à l'acte de publier un seul fichier `index.html`. Le déploiement est instantanné, et toutes les ressources sont disponibles immédiatement sans risque que le cache soit corrompu au moment du déploiement.
 
-Rollbacks are as risky as deployments and often riskier. For _Immutable Web Apps_, the same qualities of a deploy apply to a rollback. Notably, in the event of a rollback most browsers will still have the previous assets cached.
+Les retours en arrière sont aussi risqués que les déploiements, si ce n'est plus risqués encore. Pour les _Applications Web Immutables_, les bénéfices du déploiement s'appliquent au 'rollback'. Notamment, dans le cas d'un rollback, la plupart des navigateurs auront toujours à disposition les ressources précédemment mises en cache.
 
-In the unlikely event that a browser attempts to load a stale version of `index.html`, all of the assets of the previous version will still be available and uncorrupted.
+Dans le cas improbable où un navigateur essayerait de charger une version périmée de l'`index.html`, toutes les assets de la version précédentes seront toujours disponibles et non corrompues.
 
-### Simplified caching
+### Mise en cache simplifiée
 
-Managing `cache-control` headers can be intimidating, especially when the web application infrastructure leverages public caches like the ones used by CDNs. The two simplest concepts in caching are: "Always cached", and "Never cached". _Immutable Web Apps_ embraces these concepts completely separating and the code that can be "Always cached" from configuration that is "Never cached".
+Manager les headers `cache-control` peut être intimidant, spécialement quand l'infrastructure de l'application web utilises des caches publiques comme ceux utilisés par les CDNs. Les deux concepts de gestion de cache les plus simples sont : "Toujours mettre en cache" et "Ne jamais mettre en cache". _Application Web Immutable_ embrasse complètement ces concepts en séparant le code "Toujours mis en cache" de la configuration "Jamais mise en cache".
 
-### Simplified routing
+### Routage simplifié
 
-The leading application frameworks do not separate the location of static assets from the `index.html` in their [deployment recommendations](https://angular.io/guide/deployment#server-configuration). Instead, they recommend adding routing rules to the web server that returns `index.html` for all paths that do not resolve to a physical file. The implementation of these routing rules may differ between web servers and mistakes often result in paths that resolve to the wrong resource.
+Les frameworks leaders actuels du marché ne séparent pas les ressources statiques du `index.html` dans leurs [recommendations de déploiement](https://angular.io/guide/deployment#server-configuration). À la place, ils recommandent d'ajouter des règles de routage au serveur web qui retourne l'`index.html` pour toutes les routes qui dirigent pas vers un fichier physique. L'implémentation de ces règles de routage peuvent différer d'un serveur web à un autre et des erreurs peuvent souvent résulter en des routes menant aux mauvaises ressources.
 
-Separating the hosting of `index.html` and the static assets eliminates this risk. The static assets server always serves a physical file represented by the url and the web application server always serves `index.html` for any url.
+Séparer l'hébergement de l'`index.html` et des ressources statiques elimine ce risque. Le serveur de ressources statiques sert toujours un fichier physique représenté par l'url et serveur d'application web sert toujours un `index.html`, quelque soit l'url.
 
 ## ![Background](icons/favicon-16x16.png) Background
 
-_Immutable Web Applications_ methodology builds on several trends in web application development:
+La méthodologie _Applications Web Immutables_ est construite sur les bases de plusieurs tendances dans le développement d'application web :
 
-- __Modern Application Frameworks:__ Angular, React, Vue, and Ember have enabled teams to build increasingly complex single-page static apps. Tools like webpack have improved the ability to create, optimize, and manage build artifacts.
+- __Frameworks d'Application Moderne:__ Angular, React, Vue, et Ember ont permi à des nombreuses équipes de créer des applications mono-page complexes statiques. Des outils comme webpack ont amélioré la capacité à créer, optimiser et gérer les artefacts de 'build'.
 
-- __DevOps:__ The culture of DevOps has enabled web application developers to decompose and reevaluate their web application infrastructure to better serve the requirements of their web applications.
+- __DevOps:__ La culture DevOps a permi aux développeurs d'applications web de décomposer et réévaluer leur infrastructure afin de mieux servir les besoins de leurs applications web.
 
-- __Maturing Application Patterns & Practices:__ Backend applications and services are converging around a set of best practices that support portability, scalability, and high availability. This trend has dramatically increased the tools and services available, especially related to containers and container orchestration. Many of these practices are just now starting to be applied to static single-page web applications.
+- __Maturation des modèles d'applications et des pratiques:__ Les applications et services Backend convergent vers un ensemble de 'best-practices' supportant la portabilité, la flexibilité et la haute-disponibilité. Cette tendance a grandement augmentée le nombre d'outils et de services disponibles, surtout en ce qui concerne les containers et leur orchestration. Beaucoup de ces pratiques commencent maintenant à s'appliquer aux applications web statiques mono-page.
 
 ## ![Influences](icons/favicon-16x16.png) Influences
 
- - [__The Twelve-Factor App__](https://12factor.net/): This methodology for building web apps is based on _separation of concerns_ in order to achieve portability and robustness. _Immutable Web Apps_ separate several of the same concerns in order to achieve similar objectives.
+ - [__The Twelve-Factor App__](https://12factor.net/): Cette méthodologie de construction d'applications web est basée sur une séparation claire des responsabilités afin d'assurer portabilité et robustesse. _Application Web Immutable_ sépare beaucoup des même responsabilités afin d'atteindre les même objectifs.
 
- - [__JAMstack__](https://jamstack.org/): The _Immutable Web Apps_ methodology is completely aligned with the [best practices](https://jamstack.org/best-practices/) of the JAMstack.
+ - [__JAMstack__](https://jamstack.org/): La méthodologie _Application Web Immutable_ s'aligne complètement avec les [best practices](https://jamstack.org/best-practices/) du JAMstack.
 
 ## ![Projects](icons/favicon-16x16.png) Projects
 
-- [__ng-immutable-example__](https://github.com/ImmutableWebApps/ng-immutable-example): Converts a project generated by [Angular CLI](https://cli.angular.io/) into an Immutable Web App.
+- [__ng-immutable-example__](https://github.com/ImmutableWebApps/ng-immutable-example): Converti un projet généré par [Angular CLI](https://cli.angular.io/) en une Application Web Immutable Web.
 
-- [__react-immutable-example__](https://github.com/ImmutableWebApps/react-immutable-example): Converts a project generated by [Create React App](https://facebook.github.io/create-react-app/) into an Immutable Web App.
+- [__react-immutable-example__](https://github.com/ImmutableWebApps/react-immutable-example): Converti un projet généré par [Create React App](https://facebook.github.io/create-react-app/) en une Application Web Immutable Web.
 
-- [__unpkg-immutable-example__](https://github.com/ImmutableWebApps/unpkg-immutable-example): An example Immutable Web App hosted on [npm](https://www.npmjs.com/), [UNPKG](https://unpkg.com/#/), and [GitHub Pages](https://pages.github.com/).
+- [__unpkg-immutable-example__](https://github.com/ImmutableWebApps/unpkg-immutable-example): Un exemple d'Application Web Immutable hébergé sur [npm](https://www.npmjs.com/), [UNPKG](https://unpkg.com/#/), et [GitHub Pages](https://pages.github.com/).
 
-- [__aws-lambda-edge-example__](https://github.com/ImmutableWebApps/aws-lambda-edge-example): Deploys an Immutable Web App to [AWS Lambda@Edge](https://aws.amazon.com/lambda/edge/) with [Serverless](https://serverless.com/).
+- [__aws-lambda-edge-example__](https://github.com/ImmutableWebApps/aws-lambda-edge-example): Déploit une Application Web Immutable [AWS Lambda@Edge](https://aws.amazon.com/lambda/edge/) avec [Serverless](https://serverless.com/).
 
 ## ![Talks & Articles](icons/favicon-16x16.png) Talks & Articles
 
-- [_"Single-page App Deployments"_](https://www.meetup.com/nh-js-manchester/events/255671618/), Gene Connolly, [NH.js](https://www.meetup.com/nh-js-manchester/), November 14th 2018
+- [_"Single-page App Deployments"_](https://www.meetup.com/nh-js-manchester/events/255671618/), Gene Connolly, [NH.js](https://www.meetup.com/nh-js-manchester/), 14 Novembre 2018
 
-- [_"Risk-free Deployments with Immutable Web Apps"_](https://underthehood.meltwater.com/blog/2018/12/03/risk-free-deployments-with-immutable-web-apps/), Gene Connolly, [underthehood.meltwater.com](https://underthehood.meltwater.com), December 3rd 2018
+- [_"Risk-free Deployments with Immutable Web Apps"_](https://underthehood.meltwater.com/blog/2018/12/03/risk-free-deployments-with-immutable-web-apps/), Gene Connolly, [underthehood.meltwater.com](https://underthehood.meltwater.com), 3 Décembre 2018
 
-## ![Future Work](icons/favicon-16x16.png) Future Work
+## ![Travaux Futurs](icons/favicon-16x16.png) Travaux Futurs
 
-_Immutable Web Applications_ is not yet actively supported by any application framework, tools, or services. Most static, single-page applications should be able to adopt the _Immutable Web Applications_ methodology by making several minor structural changes to the codebase, build process, and infrastructure. Until there is widespread support, however, web applications that use advanced [code-splitting](https://webpack.js.org/guides/code-splitting/) techniques may find adoption to be complicated or impractical.
+_Application Web Immutable_ n'est pas activement supporté par un framework, outil ou service à l'heure actuelle. La majorité des applications mono-page devraient pouvoir adopter la méthodologie _Application Web Immutable_ en apportant des changements mineurs à leur codebase, processus de 'build' et infrastructure. Cependant, avant que le support de cette méthodologie ne se généralise, les applications web utilisant des techniques de [division de code](https://webpack.js.org/guides/code-splitting/) avancées risquent de rencontrer des complications et inadéquations lors de son adoption.
 
-Achieving widespread support will require:
+Atteindre une adoption générale demandera :
 
-- __Building tutorials, documentation, and examples__ of how to build _Immutable Web Applications_ using the leading application frameworks and tools.
+- __La création de tutoriels, documentations et exemples__ sur la façon de créer des _Applications Web Immutables_ utilisant les frameworks et outils leaders du marché,
 
-- __Proposing changes to existing frameworks and tools__ to support _Immutable Web Applications_.
+- __De proposer des changements aux frameworks et outils existant__ afin de supporter les _Applications Web Immutables_.
 
-- __Advocacy and education__ of _Immutable Web Applications_ through blog posts and presentations.
+- __De promouvoir et d'éduquer__ sur les _Applications Web Immutables_ à travers des articles de blog et des présentations.
 
 ## ![Acknowledgements](icons/favicon-16x16.png) Acknowledgements
 
-_Immutable Web Apps_ was developed based on the research and experiences building web applications at [Meltwater](https://www.meltwater.com/). Learn more about the things we are doing at our engineering blog: [underthehood.meltwater.com](https://underthehood.meltwater.com/).
+_Applications Web Immutables_ fut développé chez [Meltwater](https://www.meltwater.com/) à partir de recherches et de l'expérience gagnée à travers la création d'applications web. Apprenez-en plus sur les choses que nous produisons sur notre blog: [underthehood.meltwater.com](https://underthehood.meltwater.com/). 
 
 immutablewebapps@gmail.com
 [@immutablewebapp](https://twitter.com/ImmutableWebApp)
